@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Festejando a Conexão Cidade e Campo - Interativo</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<style>
+  /* Base and Reset */
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(120deg, #f0e9d2 0%, #a6d8a8 100%);
+    color: #2d3b25;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  a:hover, a:focus {
+    color: #3a5d2b;
+    outline: none;
+  }
+
+  /* Header */
+  header {
+    background: rgba(58, 93, 43, 0.95);
+    color: #f0e9d2;
+    padding: 1rem 3rem;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 1.9rem;
+    letter-spacing: 2px;
+    user-select: none;
+    font-family: 'Outfit', sans-serif;
+  }
+  nav {
+    display: flex;
+    gap: 2rem;
+  }
+  nav a {
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+  }
+  nav a:hover, nav a:focus {
+    background-color: #3a5d2b;
+    color: #f0e9d2;
+  }
+  #menu-toggle {
+    display: none;
+    font-size: 2.8rem;
+    background: none;
+    border: none;
+    color: #f0e9d2;
+    cursor: pointer;
+  }
+  @media (max-width: 768px) {
+    nav {
+      position: fixed;
+      top: 64px;
+      right: 0;
+      background-color: rgba(58, 93, 43, 0.95);
+      width: 260px;
+      height: calc(100% - 64px);
+      flex-direction: column;
+      padding: 2.5rem 2rem;
+      gap: 1.5rem;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      border-bottom-left-radius: 16px;
+      border-top-left-radius: 16px;
+    }
+    nav.active {
+      transform: translateX(0);
+    }
+    #menu-toggle {
+      display: block;
+    }
+  }
+
+  /* Main */
+  main {
+    flex: 1;
+    max-width: 960px;
+    padding: 3rem 1.5rem 5rem;
+    margin: 0 auto;
+  }
+  section {
+    background: rgba(240, 233, 210, 0.15);
+    border-radius: 16px;
+    padding: 3rem 3.5rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.75s cubic-bezier(0.4,0,0.2,1), transform 0.75s cubic-bezier(0.4,0,0.2,1);
+    will-change: transform, opacity;
+  }
+  section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  h2 {
+    font-weight: 900;
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: #3a5d2b;
+    user-select: none;
+    letter-spacing: 0.05em;
+    text-shadow: 1px 1px 3px #004d00;
+  }
+  p, li {
+    font-size: 1.1rem;
+    color: #000000;
+    line-height: 1.7;
+  }
+  ul {
+    padding-left: 1.75rem;
+    list-style-type: disc;
+    margin-top: 1rem;
+  }
+  ul li {
+    margin-bottom: 0.6rem;
+  }
+
+  /* Highlight box for callouts */
+  .highlight-box {
+    background-color: rgba(144, 238, 144, 0.3);
+    border-left: 8px solid #90ee90;
+    padding: 1rem 1.5rem;
+    margin-top: 1.5rem;
+    font-weight: 700;
+    color: #004d00;
+    border-radius: 12px;
+    font-size: 1.15rem;
+  }
+
+  /* Gallery */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  .gallery img {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    cursor: zoom-in;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .gallery img:hover, .gallery img:focus {
+    transform: scale(1.07);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+    outline: none;
+  }
+
+  /* Form */
+  form label {
+    display: block;
+    font-weight: 700;
+    margin: 1.2rem 0 0.6rem;
+    color: #000000;
+  }
+  form input, form textarea {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    border-radius: 16px;
+    border: 2px solid #90ee90;
+    font-size: 1.2rem;
+    color: #004d00;
+    font-family: 'Outfit', sans-serif;
+    background: rgba(240, 233, 210, 0.9);
+    transition: border-color 0.3s ease;
+  }
+  form input:focus, form textarea:focus {
+    border-color: #004d00;
+    outline: none;
+    background: #e7f4de;
+  }
+  form textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+  form button[type="submit"] {
+    margin-top: 2rem;
+    background-color: #90ee90;
+    color: #004d00;
+    font-weight: 900;
+    padding: 1rem 3rem;
+    border: none;
+    border-radius: 60px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 10px 25px rgba(144,238,144,0.8);
+  }
+  form button[type="submit"]:hover, form button[type="submit"]:focus {
+    background-color: #67c667;
+    outline: none;
+  }
+  #form-msg {
+    margin-top: 1.5rem;
+    color: #90ee90;
+    font-weight: 800;
+    font-size: 1.2rem;
+    min-height: 2em;
+    user-select: text;
+    text-shadow: 0 1px 3px #004d00;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    background-color: #004d00;
+    color: #90ee90;
+    font-weight: 900;
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+    user-select: none;
+  }
+
+  /* Responsive Nav */
+  #menu-toggle {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    #menu-toggle {
+      display: block;
+      font-size: 3rem;
+      color: #90ee90;
+      background: none;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+    }
+    nav {
+      position: fixed;
+      top: 64px;
+      right: 0;
+      background-color: rgba(0, 100, 0, 0.95);
+      width: 280px;
+      height: calc(100% - 64px);
+      flex-direction: column;
+      padding: 3rem 2rem;
+      gap: 2rem;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      border-bottom-left-radius: 20px;
+      border-top-left-radius: 20px;
+      box-shadow: -6px 0 12px rgba(0,0,0,0.4);
+      z-index: 30;
+    }
+    nav.active {
+      transform: translateX(0);
+    }
+    nav a {
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+    }
+    nav a:hover, nav a:focus {
+      background-color: #004d00;
+      color: #90ee90;
+      outline: none;
+    }
+  }
+
+  /* Additional interactions */
+  .float-animation {
+    animation: floatUpDown 4s ease-in-out infinite;
+  }
+
+  @keyframes floatUpDown {
+    0%, 100% {
+      transform: translateY(0);
+      filter: drop-shadow(0 4px 3px rgba(0,100,0,0.4));
+    }
+    50% {
+      transform: translateY(-15px);
+      filter: drop-shadow(0 8px 6px rgba(0,100,0,0.6));
+    }
+  }
+
+  /* Button scroll to top */
+  #top-btn {
+    position: fixed;
+    bottom: 2.5rem;
+    right: 2.5rem;
+    background-color: #90ee90;
+    color: #004d00;
+    border: none;
+    border-radius: 50%;
+    padding: 0.75rem 1rem;
+    font-size: 2rem;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(144,238,144,0.75);
+    display: none;
+    z-index: 100;
+    transition: background-color 0.3s ease;
+  }
+  #top-btn:hover {
+    background-color: #67c667;
+  }
+
+  /* NEW: Interactive quiz styles */
+  .quiz-section {
+    background: rgba(165, 190, 0, 0.1);
+    margin-top: 2rem;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+  }
+  .quiz-section h3 {
+    color: #314e05;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+  }
+  .quiz-options {
+    margin-top: 1rem;
+  }
+  .quiz-options button {
+    background-color: #90ee90;
+    border: none;
+    border-radius: 30px;
+    margin: 0.3rem;
+    padding: 0.8rem 1.4rem;
+    cursor: pointer;
+    font-weight: 700;
+    color: #004d00;
+    transition: background-color 0.3s ease;
+  }
+  .quiz-options button:hover, .quiz-options button:focus {
+    background-color: #67c667;
+    outline: none;
+  }
+  #quiz-result {
+    margin-top: 1rem;
+    font-weight: 800;
+    color: #2a5100;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" tabindex="0" aria-label="Festejando a Conexão Cidade e Campo">FESTEJANDO CONEXÃO</div>
+  <button id="menu-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Abrir menu de navegação" role="button" class="material-icons">menu</button>
+  <nav id="nav-menu" aria-label="Menu Principal">
+    <a href="#sobre" tabindex="0">Sobre</a>
+    <a href="#programacao" tabindex="0">Programação</a>
+    <a href="#galeria" tabindex="0">Galeria</a>
+    <a href="#interacao" tabindex="0">Interação</a>
+    <a href="#contato" tabindex="0">Contato</a>
+  </nav>
+</header>
+
+<main>
+  <section id="sobre" tabindex="0" aria-labelledby="sobre-titulo">
+    <h2 id="sobre-titulo" class="float-animation">Sobre a Festa</h2>
+    <p>“Festejando a Conexão Cidade e Campo” celebra a riqueza cultural e a união das tradições urbanas e rurais. Música, comida e arte se unem para conectar histórias e pessoas.</p>
+    <p>É um espaço de encontro, valorização das raízes e da sustentabilidade, fomentando respeito e integração.</p>
+    <div class="highlight-box" role="note">
+      Participe e celebre a diversidade que nos une!
+    </div>
+    <a href="#programacao" class="btn" aria-label="Confira a programação">Confira a programação</a>
+  </section>
+
+  <section id="programacao" tabindex="0" aria-labelledby="programacao-titulo">
+    <h2 id="programacao-titulo">Programação</h2>
+    <p>Uma programação ampla para todas as idades, com muita cultura e diversão:</p>
+    <ul>
+      <li><strong>10h - Abertura</strong>: Cortejo com representantes da cidade e campo</li>
+      <li><strong>12h - Almoço típico</strong>: Sabores autênticos para todos</li>
+      <li><strong>15h - Oficinas</strong>: Artesanato, música e tecnologia rural</li>
+      <li><strong>18h - Música ao vivo</strong>: Bandas locais e shows culturais</li>
+      <li><strong>20h - Festival de dança</strong>: Danças tradicionais e urbanas</li>
+      <li><strong>22h - Encerramento</strong>: Fogos de artifício e confraternização</li>
+    </ul>
+  </section>
+
+  <section id="galeria" tabindex="0" aria-labelledby="galeria-titulo">
+    <h2 id="galeria-titulo">Galeria de Fotos</h2>
+    <div class="gallery" aria-label="Galeria com imagens do evento">
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2476b61a-b4d5-4d24-af27-56e7307ef876.png" alt="Pessoas tocando música ao ar livre na festa conexão cidade e campo" loading="lazy" />
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f8845e74-7e04-4472-996e-dcd7a481fb9d.png" alt="Mesa com comidas típicas do campo e da cidade servidas no evento" loading="lazy" />
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/470722e4-7050-40ba-9aa9-3a2e9e49f880.png" alt="Pessoas aprendendo artesanato tradicional numa oficina do evento" loading="lazy" />
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/53287790-462a-4c08-8af8-9fa3b7d09d0b.png" alt="Grupo realizando dança regional em traje típico" loading="lazy" />
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/aaf5e771-aae0-4bb0-8791-784d9eabdbc8.png" alt="Arte que simboliza a conexão entre tradição do campo e modernidade da cidade" loading="lazy" />
+      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1eabf6ec-d27c-4608-8efa-da72374cbbb3.png" alt="Famílias celebrando juntas em festa comunitária" loading="lazy" />
+    </div>
+  </section>
+
+  <section id="interacao" tabindex="0" aria-labelledby="interacao-titulo">
+    <h2 id="interacao-titulo">Interaja Conosco</h2>
+    <p>Queremos saber mais sobre você! Participe de nosso quiz rápido e descubra que tipo de conexão com a cidade e o campo você tem!</p>
+    <div class="quiz-section" role="region" aria-live="polite" aria-labelledby="quiz-title">
+      <h3 id="quiz-title">Qual sua relação com a cidade e o campo?</h3>
+      <div class="quiz-options">
+        <button type="button" data-answer="campo">Sou mais conectado ao campo e natureza</button>
+        <button type="button" data-answer="cidade">Sou mais da cidade, urbano e moderno</button>
+        <button type="button" data-answer="ambos">Curto a mistura de ambos, cidade e campo</button>
+      </div>
+      <div id="quiz-result" tabindex="0"></div>
+    </div>
+  </section>
+
+  <section id="contato" tabindex="0" aria-labelledby="contato-titulo">
+    <h2 id="contato-titulo">Contato</h2>
+    <p>Quer participar ou saber mais? Nos envie uma mensagem:</p>
+    <form id="contato-form" aria-label="Formulário de contato">
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" name="nome" required placeholder="Seu nome" aria-required="true" />
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" required placeholder="seu@email.com" aria-required="true" />
+      <label for="mensagem">Mensagem</label>
+      <textarea id="mensagem" name="mensagem" rows="5" required placeholder="Escreva sua mensagem" aria-required="true"></textarea>
+      <button type="submit" aria-label="Enviar mensagem">Enviar</button>
+      <p id="form-msg" role="alert" aria-live="polite"></p>
+    </form>
+  </section>
+</main>
+
+<footer>
+  &copy; 2025 Festejando a Conexão Cidade e Campo &middot; Todos os direitos reservados
+</footer>
+
+<button id="top-btn" aria-label="Voltar ao topo" title="Voltar ao topo" type="button">▲</button>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const navMenu = document.getElementById('nav-menu');
+  menuToggle.addEventListener('click', () => {
+    const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', !isExpanded);
+    navMenu.classList.toggle('active');
+  });
+
+  // Reveal sections on scroll
+  const sections = document.querySelectorAll('main section');
+  const revealOnScroll = () => {
+    const trigger = window.innerHeight * 0.85;
+    sections.forEach(section => {
+      const top = section.getBoundingClientRect().top;
+      if (top < trigger) section.classList.add('visible');
+      else section.classList.remove('visible');
+    });
+  };
+  window.addEventListener('scroll', revealOnScroll);
+  window.addEventListener('load', revealOnScroll);
+
+  // Form submission simulation
+  const form = document.getElementById('contato-form');
+  const messageOutput = document.getElementById('form-msg');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    messageOutput.textContent = 'Enviando sua mensagem, aguarde...';
+    setTimeout(() => {
+      messageOutput.textContent = 'Mensagem enviada com sucesso! Obrigado pelo contato!';
+      form.reset();
+    }, 1800);
+  });
+
+  // Scroll to top button
+  const topBtn = document.getElementById('top-btn');
+  window.addEventListener('scroll', () => {
+    if(window.pageYOffset > 300) {
+      topBtn.style.display = 'block';
+    } else {
+      topBtn.style.display = 'none';
+    }
+  });
+  topBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Quiz interaction
+  const quizButtons = document.querySelectorAll('.quiz-options button');
+  const quizResult = document.getElementById('quiz-result');
+  quizButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const answer = button.getAttribute('data-answer');
+      let message = '';
+      switch(answer) {
+        case 'campo':
+          message = 'Você tem uma conexão profunda com a natureza, valorizando a tranquilidade e tradições do campo!';
+          break;
+        case 'cidade':
+          message = 'Você é encantado pela vida urbana, agitação e diversidade cultural da cidade!';
+          break;
+        case 'ambos':
+          message = 'Você aprecia o melhor dos dois mundos, unindo modernidade e raízes rurais!';
+          break;
+        default:
+          message = 'Obrigado por participar!';
+      }
+      quizResult.textContent = message;
+      quizResult.focus();
+    });
+  });
+</script>
+
+</body>
+</html>
+
